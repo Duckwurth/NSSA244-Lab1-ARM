@@ -1,0 +1,2 @@
+#Template deployes my Resource Group infrastructure - includes network security group, vms, nics, ssh public keys and location. 
+#This was exported January 27th 2026
