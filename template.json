@@ -236,8 +236,7 @@
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
-                            "storageAccountType": "Premium_LRS",
-                            "id": "[resourceId('Microsoft.Compute/disks', concat(parameters('virtualMachines_WEB_1_REMAKE_name'), '_disk1_ee2884fc607544b5964de495490bd633'))]"
+                            "storageAccountType": "Premium_LRS"
                         },
                         "deleteOption": "Delete",
                         "diskSizeGB": 30
@@ -246,12 +245,11 @@
                         {
                             "lun": 0,
                             "name": "WEB1REMAKE-DATA1",
-                            "createOption": "Attach",
+                            "createOption": "Empty",
                             "caching": "ReadWrite",
                             "writeAcceleratorEnabled": false,
                             "managedDisk": {
-                                "storageAccountType": "StandardSSD_LRS",
-                                "id": "[resourceId('Microsoft.Compute/disks', 'web1remake-data1')]"
+                                "storageAccountType": "StandardSSD_LRS"
                             },
                             "deleteOption": "Detach",
                             "diskSizeGB": 16,
@@ -284,7 +282,6 @@
                     },
                     "secrets": [],
                     "allowExtensionOperations": true,
-                    "requireGuestProvisionSignal": true
                 },
                 "securityProfile": {
                     "uefiSettings": {
