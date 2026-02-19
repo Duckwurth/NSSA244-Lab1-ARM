@@ -26,14 +26,6 @@
             "defaultValue": "WEB-1-REMAKE_key",
             "type": "String"
         },
-        "publicIPAddresses_WEB_1_REMAKE_ip_name": {
-            "defaultValue": "WEB-1-REMAKE-ip",
-            "type": "String"
-        },
-        "publicIPAddresses_WEB_2_REMAKE_ip_name": {
-            "defaultValue": "WEB2-ip",
-            "type": "String"
-        },
         "virtualNetworks_vnet_canadacentral_name": {
             "defaultValue": "vnet-canadacentral",
             "type": "String"
@@ -118,47 +110,19 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2024-07-01",
-            "name": "[parameters('publicIPAddresses_WEB_1_REMAKE_ip_name')]",
+            "name": "loadbalancerPIP",
             "location": "canadacentral",
             "sku": {
-                "name": "Standard",
-                "tier": "Regional"
-            },
-            "zones": [
-                "2"
-            ],
-            "properties": {
+                 "name": "Standard"
+             },
+                "zones": [
+                 "2"
+                ],
+                "properties": {
                 "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Static",
-                "idleTimeoutInMinutes": 4,
-                "ipTags": [],
-                "ddosSettings": {
-                    "protectionMode": "VirtualNetworkInherited"
-                }
+                "publicIPAllocationMethod": "Static"
             }
-        },
-        {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2024-07-01",
-            "name": "[parameters('publicIPAddresses_WEB_2_REMAKE_ip_name')]",
-            "location": "canadacentral",
-            "sku": {
-                "name": "Standard",
-                "tier": "Regional"
-            },
-            "zones": [
-                "2"
-            ],
-            "properties": {
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Static",
-                "idleTimeoutInMinutes": 4,
-                "ipTags": [],
-                "ddosSettings": {
-                    "protectionMode": "VirtualNetworkInherited"
-                }
-            }
-        },
+        },        
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2024-07-01",
@@ -525,33 +489,26 @@
             "name": "[parameters('networkInterfaces_web_1_remake858_z2_name')]",
             "location": "canadacentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_WEB_1_REMAKE_ip_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_canadacentral_name'), 'snet-canadacentral-1')]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_NSG_WEB_name'))]"
             ],
             "kind": "Regular",
             "properties": {
                 "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_web_1_remake858_z2_name')), '/ipConfigurations/ipconfig1')]",
-                        "type": "Microsoft.Network/networkInterfaces/ipConfigurations",
-                        "properties": {
-                            "privateIPAddress": "172.16.0.5",
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_WEB_1_REMAKE_ip_name'))]",
-                                "properties": {
-                                    "deleteOption": "Detach"
-                                }
-                            },
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_canadacentral_name'), 'snet-canadacentral-1')]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
+                {
+                    "name": "ipconfig1",
+                    "properties": {
+                    "subnet": {
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_canadacentral_name'), 'snet-canadacentral-1')]"
+                    },
+                    "privateIPAllocationMethod": "Dynamic",
+                    "loadBalancerBackendAddressPools": [
+                        {
+                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', 'LBWeb1-2'), '/backendAddressPools/LB-BackendPool')]"
                         }
+                    ]
                     }
+                }
                 ],
                 "dnsSettings": {
                     "dnsServers": []
@@ -573,33 +530,26 @@
             "name": "[parameters('networkInterfaces_web_2_remake858_z2_name')]",
             "location": "canadacentral",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_WEB_2_REMAKE_ip_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_canadacentral_name'), 'snet-canadacentral-1')]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_NSG_WEB_name'))]"
             ],
             "kind": "Regular",
             "properties": {
                 "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_web_2_remake858_z2_name')), '/ipConfigurations/ipconfig1')]",
-                        "type": "Microsoft.Network/networkInterfaces/ipConfigurations",
-                        "properties": {
-                            "privateIPAddress": "172.16.0.5",
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_WEB_2_REMAKE_ip_name'))]",
-                                "properties": {
-                                    "deleteOption": "Detach"
-                                }
-                            },
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_canadacentral_name'), 'snet-canadacentral-1')]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
+                {
+                    "name": "ipconfig1",
+                    "properties": {
+                    "subnet": {
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_canadacentral_name'), 'snet-canadacentral-1')]"
+                    },
+                    "privateIPAllocationMethod": "Dynamic",
+                    "loadBalancerBackendAddressPools": [
+                        {
+                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', 'LBWeb1-2'), '/backendAddressPools/LB-BackendPool')]"
                         }
+                    ]
                     }
+                }
                 ],
                 "dnsSettings": {
                     "dnsServers": []
@@ -613,6 +563,68 @@
                 "nicType": "Standard",
                 "auxiliaryMode": "None",
                 "auxiliarySku": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Network/loadBalancers",
+            "apiVersion": "2024-07-01",
+            "name": "LBWeb1-2",
+            "location": "canadacentral",
+            "sku": {
+                "name": "Standard"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', 'loadbalancerPIP')]"
+            ],
+            "properties": {
+                "frontendIPConfigurations": [
+                {
+                    "name": "LB-Frontend",
+                    "properties": {
+                    "publicIPAddress": {
+                        "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'loadbalancerPIP')]"
+                    }
+                    }
+                }
+                ],
+                "backendAddressPools": [
+                {
+                    "name": "LB-BackendPool"
+                }
+                ],
+                "probes": [
+                {
+                    "name": "HTTP-Probe",
+                    "properties": {
+                    "protocol": "Tcp",
+                    "port": 80,
+                    "intervalInSeconds": 5,
+                    "numberOfProbes": 2
+                    }
+                }
+                ],
+                "loadBalancingRules": [
+                {
+                    "name": "HTTP-Rule",
+                    "properties": {
+                    "frontendIPConfiguration": {
+                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', 'LBWeb1-2'), '/frontendIPConfigurations/LB-Frontend')]"
+                    },
+                    "backendAddressPool": {
+                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', 'LBWeb1-2'), '/backendAddressPools/LB-BackendPool')]"
+                    },
+                    "probe": {
+                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', 'LBWeb1-2'), '/probes/HTTP-Probe')]"
+                    },
+                    "protocol": "Tcp",
+                    "frontendPort": 80,
+                    "backendPort": 80,
+                    "enableFloatingIP": false,
+                    "idleTimeoutInMinutes": 4,
+                    "loadDistribution": "Default"
+                    }
+                }
+                ]
             }
         }
     ]
